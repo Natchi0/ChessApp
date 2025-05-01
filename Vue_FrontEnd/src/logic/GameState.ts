@@ -25,6 +25,7 @@ export class GameState {
   private _turn: number
   private _actualFen: string
   private _enPessant: number | null
+  private _enPessantTargetColor: number | null
   private _halfMoves: number
   private _castleWK: boolean
   private _castleWQ: boolean
@@ -38,6 +39,7 @@ export class GameState {
     this._turn = 0
     this._actualFen = ''
     this._enPessant = null
+    this._enPessantTargetColor = null
     this._halfMoves = 0
     this._castleWK = true
     this._castleWQ = true
@@ -107,6 +109,14 @@ export class GameState {
 
   public set enPessant(value: number | null) {
     this._enPessant = value
+  }
+
+  public get enPessantTargetColor(): number | null {
+    return this._enPessantTargetColor
+  }
+
+  public set enPessantTargetColor(value: number | null) {
+    this._enPessantTargetColor = value
   }
 
   public get halfMoves(): number {

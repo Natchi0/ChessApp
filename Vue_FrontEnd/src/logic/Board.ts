@@ -1,60 +1,48 @@
-import { GameState as GameStateClass } from "./GameState";
-import { Piece, PieceColor, PieceMask, ColorMask, PieceType } from "./PieceLogic";
-import { useSquaresStore } from "@/stores/squares";
+import { GameState as GameStateClass } from './GameState'
+import { Piece, PieceColor, PieceMask, ColorMask, PieceType } from './PieceLogic'
+import { useSquaresStore } from '@/stores/squares'
 
 const PiecesFromFen: { [key: string]: number } = {
-  "p": Piece.PawnB,
-  "n": Piece.KnightB,
-  "b": Piece.BishopB,
-  "r": Piece.RookB,
-  "q": Piece.QueenB,
-  "k": Piece.KingB,
+  p: Piece.PawnB,
+  n: Piece.KnightB,
+  b: Piece.BishopB,
+  r: Piece.RookB,
+  q: Piece.QueenB,
+  k: Piece.KingB,
 
-  "P": Piece.PawnW,
-  "N": Piece.KnightW,
-  "B": Piece.BishopW,
-  "R": Piece.RookW,
-  "Q": Piece.QueenW,
-  "K": Piece.KingW
+  P: Piece.PawnW,
+  N: Piece.KnightW,
+  B: Piece.BishopW,
+  R: Piece.RookW,
+  Q: Piece.QueenW,
+  K: Piece.KingW,
 }
 
 const mailbox: number[] = [
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-  -1,  0,  1,  2,  3,  4,  5,  6,  7, -1,
-  -1,  8,  9, 10, 11, 12, 13, 14, 15, -1,
-  -1, 16, 17, 18, 19, 20, 21, 22, 23, -1,
-  -1, 24, 25, 26, 27, 28, 29, 30, 31, -1,
-  -1, 32, 33, 34, 35, 36, 37, 38, 39, -1,
-  -1, 40, 41, 42, 43, 44, 45, 46, 47, -1,
-  -1, 48, 49, 50, 51, 52, 53, 54, 55, -1,
-  -1, 56, 57, 58, 59, 60, 61, 62, 63, -1,
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-];
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4,
+  5, 6, 7, -1, -1, 8, 9, 10, 11, 12, 13, 14, 15, -1, -1, 16, 17, 18, 19, 20, 21, 22, 23, -1, -1, 24,
+  25, 26, 27, 28, 29, 30, 31, -1, -1, 32, 33, 34, 35, 36, 37, 38, 39, -1, -1, 40, 41, 42, 43, 44,
+  45, 46, 47, -1, -1, 48, 49, 50, 51, 52, 53, 54, 55, -1, -1, 56, 57, 58, 59, 60, 61, 62, 63, -1,
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+]
 
 const mailbox64: number[] = [
-  21, 22, 23, 24, 25, 26, 27, 28,
-  31, 32, 33, 34, 35, 36, 37, 38,
-  41, 42, 43, 44, 45, 46, 47, 48,
-  51, 52, 53, 54, 55, 56, 57, 58,
-  61, 62, 63, 64, 65, 66, 67, 68,
-  71, 72, 73, 74, 75, 76, 77, 78,
-  81, 82, 83, 84, 85, 86, 87, 88,
-  91, 92, 93, 94, 95, 96, 97, 98
-];
+  21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48,
+  51, 52, 53, 54, 55, 56, 57, 58, 61, 62, 63, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78,
+  81, 82, 83, 84, 85, 86, 87, 88, 91, 92, 93, 94, 95, 96, 97, 98,
+]
 
 //                               caballo alfil torre reina rey
-const slide: boolean[] = [ false, false, true, true, true, false ];
+const slide: boolean[] = [false, false, true, true, true, false]
 
 const offset: number[][] = [
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ -21, -19, -12, -8, 8, 12, 19, 21 ], //caballo
-    [ -11, -9, 9, 11, 0, 0, 0, 0 ], //alfil
-    [ -10, -1, 1, 10, 0, 0, 0, 0 ], //torre
-    [ -11, -10, -9, -1, 1, 9, 10, 11 ], //reina
-    [ -11, -10, -9, -1, 1, 9, 10, 11 ] //rey
-];
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [-21, -19, -12, -8, 8, 12, 19, 21], //caballo
+  [-11, -9, 9, 11, 0, 0, 0, 0], //alfil
+  [-10, -1, 1, 10, 0, 0, 0, 0], //torre
+  [-11, -10, -9, -1, 1, 9, 10, 11], //reina
+  [-11, -10, -9, -1, 1, 9, 10, 11], //rey
+]
 
 /**
  * @description Clase que representa la logica del tablero de ajedrez ademas de almacenar los cuadros, es un singleton
@@ -126,7 +114,7 @@ export class BoardLogic {
   }
 
   public HandlePieceMovement(actualIndex: number, newIndex: number): void {
-    console.log("HandlePieceMovement", actualIndex, newIndex)
+    console.log('HandlePieceMovement', actualIndex, newIndex)
     const GameState = GameStateClass.GetInstance()
     const squares: number[] = this._squares.getSquares()
 
@@ -134,7 +122,8 @@ export class BoardLogic {
     const pieceCode: number = squares[actualIndex]
     const pieceColor: number = pieceCode & ColorMask
     const pieceType: number = pieceCode & PieceMask
-    const ColorEnemigo: number = pieceColor == PieceColor.White ? PieceColor.Black : PieceColor.White
+    const ColorEnemigo: number =
+      pieceColor == PieceColor.White ? PieceColor.Black : PieceColor.White
     let possibleEnPassant: number | null = null
     let isOnLastRank: boolean | null = null
 
@@ -143,20 +132,20 @@ export class BoardLogic {
     // }
 
     //chequear que la nueva posicion sea válida
-    console.log("validMove ", this.ValidMoveCheck(actualIndex, newIndex))
+    console.log('validMove ', this.ValidMoveCheck(actualIndex, newIndex))
     if (!this.ValidMoveCheck(actualIndex, newIndex)) {
-      console.log("Movimiento invalido")
-      return;
+      console.log('Movimiento invalido')
+      return
     }
 
     //verifico no haber llegado a los 50 movimientos
     if (GameState.halfMoves >= 50) {
-      throw new Error("Se ha llegado a los 50 movimientos sin capturas ni movimientos de peones")
+      throw new Error('Se ha llegado a los 50 movimientos sin capturas ni movimientos de peones')
     }
 
     //verifico que el movimiento no deje al rey en jaque
     if (this.CheckChecker(pieceColor, actualIndex, newIndex, pieceType)) {
-      throw new Error("El movimiento deja al rey en jaque")
+      throw new Error('El movimiento deja al rey en jaque')
     }
 
     /**
@@ -164,9 +153,9 @@ export class BoardLogic {
      */
 
     //la posicion es valida, primero verifico en caso de que sea un peon para validar los movimientos en passant
-    if (pieceType == PieceType.Pawn){
+    if (pieceType == PieceType.Pawn) {
       //verifico que se esté intentando capturar en passant
-      if(newIndex == GameState.enPessant){
+      if (pieceColor != GameState.enPessantTargetColor && newIndex == GameState.enPessant) {
         //captura en passant
         squares[newIndex + (pieceColor == PieceColor.White ? 8 : -8)] = 0
       }
@@ -177,11 +166,13 @@ export class BoardLogic {
       }
 
       //el peon llega a la ultima fila
-      isOnLastRank = (pieceColor == PieceColor.White && newIndex >= 0 && newIndex <= 7) ||
-                      (pieceColor == PieceColor.Black && newIndex >= 56 && newIndex <= 63);
+      isOnLastRank =
+        (pieceColor == PieceColor.White && newIndex >= 0 && newIndex <= 7) ||
+        (pieceColor == PieceColor.Black && newIndex >= 56 && newIndex <= 63)
     }
     //setear el en passant
     GameState.enPessant = possibleEnPassant
+    GameState.enPessantTargetColor = pieceColor
 
     //manejo los enroques en funcion aparte
     this.CastlingManager(pieceType, pieceColor, actualIndex, newIndex)
@@ -191,10 +182,9 @@ export class BoardLogic {
     squares[actualIndex] = 0
 
     //en caso de capturar una pieza o mover un peon, actualizo los movimientos
-    if(squares[newIndex] != 0 || pieceType == PieceType.Pawn){
+    if (squares[newIndex] != 0 || pieceType == PieceType.Pawn) {
       GameState.halfMoves = 0
-    }
-    else{
+    } else {
       GameState.halfMoves++
     }
 
@@ -206,44 +196,41 @@ export class BoardLogic {
 
     //verifico el jaque
     //color es el color del rey que puede estar en jaque, si blanco acaba de mover entonces color negro
-    if(this.CheckChecker(ColorEnemigo)){
+    if (this.CheckChecker(ColorEnemigo)) {
       //chequeo si es jaque mate
-      if(this.MateChecker(ColorEnemigo)){
+      if (this.MateChecker(ColorEnemigo)) {
         //TODO: hacer un popup para mostrar el jaque mate
-        console.log("JAQUE MATE")
+        console.log('JAQUE MATE')
       }
 
       //si no es jaque mate, aviso que hay jaque
-      if(ColorEnemigo == PieceColor.White){
-        if(!GameState.whiteInCheck){
-          console.log("JAQUE BLANCO")
+      if (ColorEnemigo == PieceColor.White) {
+        if (!GameState.whiteInCheck) {
+          console.log('JAQUE BLANCO')
         }
         GameState.whiteInCheck = true
-      }
-      else{
-        if(!GameState.blackInCheck){
-          console.log("JAQUE NEGRO")
+      } else {
+        if (!GameState.blackInCheck) {
+          console.log('JAQUE NEGRO')
         }
         GameState.blackInCheck = true
       }
-    }
-    else{
-      if(pieceColor == PieceColor.White){
+    } else {
+      if (pieceColor == PieceColor.White) {
         GameState.whiteInCheck = false
-      }
-      else{
+      } else {
         GameState.blackInCheck = false
       }
     }
 
-    console.log("squares", squares)
+    console.log('squares', squares)
     //actualizo el store de squares
-    console.log("store squares", this._squares.getSquares())
+    console.log('store squares', this._squares.getSquares())
     this._squares.setSquares(squares)
-    console.log("store squares2", this._squares.getSquares())
+    console.log('store squares2', this._squares.getSquares())
 
     //cambio el turno
-    GameState.ChangeTurn();
+    GameState.ChangeTurn()
   }
 
   //se le puede pasar un array de squares para chequear o en su defecto se chequea el array de squares original
@@ -351,7 +338,7 @@ export class BoardLogic {
     }
 
     //chequeo las capturas
-    [leftCapture, rightCapture].forEach((capture) => {
+    ;[leftCapture, rightCapture].forEach((capture) => {
       const captureIndex: number = valPos64 + capture
       const captureTarget: number = mailbox[captureIndex]
 
@@ -359,12 +346,12 @@ export class BoardLogic {
         captureTarget != -1 &&
         ((squaresSource[captureTarget] != 0 &&
           (squaresSource[captureTarget] & ColorMask) != pieceColor) ||
-          captureTarget == GameState.enPessant)
+          (pieceColor != GameState.enPessantTargetColor && captureTarget == GameState.enPessant))
       ) {
         possibleMovements.push(captureTarget)
       }
     })
-    console.log("possibleMovements", possibleMovements)
+    console.log('possibleMovements', possibleMovements)
     return possibleMovements
   }
 
@@ -452,17 +439,22 @@ export class BoardLogic {
   }
 
   private ValidMoveCheck(actualIndex: number, newIndex: number): boolean {
-    const moves: number[] = this.GetPossiblePieceMovements(actualIndex);
+    const moves: number[] = this.GetPossiblePieceMovements(actualIndex)
     for (const move of moves) {
       if (move == newIndex) {
-        console.log("valid move")
-        return true;
+        console.log('valid move')
+        return true
       }
     }
-    return false;
+    return false
   }
 
-  private CastlingManager(pieceType: number, pieceColor: number, actualIndex: number, newIndex: number): void {
+  private CastlingManager(
+    pieceType: number,
+    pieceColor: number,
+    actualIndex: number,
+    newIndex: number,
+  ): void {
     const GameState = GameStateClass.GetInstance()
     const squares: number[] = this._squares.getSquares()
 
@@ -513,7 +505,12 @@ export class BoardLogic {
   }
 
   //color es el color del rey a chequear
-  private CheckChecker(color: number, actualIndex: number | null = null, newIndex: number | null = null, pieceType: number | null = null): boolean {
+  private CheckChecker(
+    color: number,
+    actualIndex: number | null = null,
+    newIndex: number | null = null,
+    pieceType: number | null = null,
+  ): boolean {
     const squares: number[] = this._squares.getSquares()
     const GameState = GameStateClass.GetInstance()
 

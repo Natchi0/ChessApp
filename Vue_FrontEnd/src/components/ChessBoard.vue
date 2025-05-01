@@ -93,6 +93,7 @@ function OnPieceClick(index:number): void{
   width: 100%;
   grid-template-columns: 0.25fr repeat(8, 1fr) 0.25fr; /* Columnas: guía - tablero - guía */
   grid-template-rows: 0.25fr repeat(8, 1fr) 0.25fr; /* Filas: guía - tablero - guía */
+  user-select: none;
 }
 
 .guide {

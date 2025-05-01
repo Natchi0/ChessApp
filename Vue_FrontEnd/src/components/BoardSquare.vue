@@ -24,7 +24,9 @@ const pieceSrc = computed(() => {
 <template>
   <div class="h-full w-full text-black relative flex justify-center items-center" :class="[{'bg-orange-200': props.color},{'bg-yellow-900': !props.color}]">
 
-    <img :src="pieceSrc" alt="">
+    <div class="hover:scale-110 transition-all duration-200 back">
+      <img :src="pieceSrc" alt="" />
+    </div>
 
     <div class="w-full h-full absolute" :class="{'possible-move': highlighted}"/>
 
@@ -41,7 +43,8 @@ const pieceSrc = computed(() => {
 }
 
 .possible-move:hover{
-  background-color: rgba(225, 255, 0, 0.8);
+  background-color: rgba(200, 255, 0, 0.9);
+  cursor: pointer;
 }
 
 </style>
