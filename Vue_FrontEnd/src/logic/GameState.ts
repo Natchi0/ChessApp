@@ -59,7 +59,7 @@ export class GameState {
    * @description Cambia el turno del juego, alternando entre blanco y negro,
    * tambien actualiza el estado actual del fen
    */
-  public static ChangeTurn(): void {
+  public ChangeTurn(): void {
     const instance = GameState.GetInstance()
     instance._turn++
     instance.state = instance.state === EState.White ? EState.Black : EState.White
