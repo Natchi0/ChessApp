@@ -37,7 +37,6 @@ function OnPieceClick(index:number): void{
     if (selectedSquareIndex.value != index){
       try{
         Board.HandlePieceMovement(selectedSquareIndex.value, index);
-        console.log("Moved piece from index: ", selectedSquareIndex.value, " to index: ", index);
       }
       catch (error){
         console.error("Error moving piece: ", error);

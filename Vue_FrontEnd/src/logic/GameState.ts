@@ -35,7 +35,7 @@ export class GameState {
   private _blackInCheck: boolean
 
   private constructor() {
-    this._state = EState.Menu
+    this._state = EState.White
     this._turn = 0
     this._actualFen = ''
     this._enPessant = null
@@ -62,10 +62,8 @@ export class GameState {
    * tambien actualiza el estado actual del fen
    */
   public ChangeTurn(): void {
-    const instance = GameState.GetInstance()
-    instance._turn++
-    instance.state = instance.state === EState.White ? EState.Black : EState.White
-
+    this._turn++
+    this._state = this._state === EState.White ? EState.Black : EState.White
     //instance.actualFern = getActualFern()
   }
 

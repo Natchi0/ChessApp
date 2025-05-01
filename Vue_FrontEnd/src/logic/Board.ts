@@ -114,7 +114,6 @@ export class BoardLogic {
   }
 
   public HandlePieceMovement(actualIndex: number, newIndex: number): void {
-    console.log('HandlePieceMovement', actualIndex, newIndex)
     const GameState = GameStateClass.GetInstance()
     const squares: number[] = this._squares.getSquares()
 
@@ -127,12 +126,11 @@ export class BoardLogic {
     let possibleEnPassant: number | null = null
     let isOnLastRank: boolean | null = null
 
-    // if(pieceColor != GameState.turn){
-    //   throw new Error("No es el turno de la pieza seleccionada")
-    // }
+    if(pieceColor != GameState.state){
+      throw new Error("No es el turno de la pieza seleccionada")
+    }
 
     //chequear que la nueva posicion sea válida
-    console.log('validMove ', this.ValidMoveCheck(actualIndex, newIndex))
     if (!this.ValidMoveCheck(actualIndex, newIndex)) {
       console.log('Movimiento invalido')
       return
@@ -223,12 +221,8 @@ export class BoardLogic {
       }
     }
 
-    console.log('squares', squares)
     //actualizo el store de squares
-    console.log('store squares', this._squares.getSquares())
     this._squares.setSquares(squares)
-    console.log('store squares2', this._squares.getSquares())
-
     //cambio el turno
     GameState.ChangeTurn()
   }
@@ -351,7 +345,7 @@ export class BoardLogic {
         possibleMovements.push(captureTarget)
       }
     })
-    console.log('possibleMovements', possibleMovements)
+
     return possibleMovements
   }
 
@@ -442,7 +436,6 @@ export class BoardLogic {
     const moves: number[] = this.GetPossiblePieceMovements(actualIndex)
     for (const move of moves) {
       if (move == newIndex) {
-        console.log('valid move')
         return true
       }
     }
