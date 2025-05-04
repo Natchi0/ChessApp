@@ -130,6 +130,7 @@ export class GameState {
   }
 
   public set castleWK(value: boolean) {
+    console.log('castleWK', this._castleWK)
     this._castleWK = value
   }
 
@@ -138,6 +139,7 @@ export class GameState {
   }
 
   public set castleWQ(value: boolean) {
+    console.log('castleWQ', this._castleWK)
     this._castleWQ = value
   }
 

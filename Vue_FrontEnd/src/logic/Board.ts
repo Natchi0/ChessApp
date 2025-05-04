@@ -126,9 +126,9 @@ export class BoardLogic {
     let possibleEnPassant: number | null = null
     let isOnLastRank: boolean | null = null
 
-    if(pieceColor != GameState.state){
-      throw new Error("No es el turno de la pieza seleccionada")
-    }
+    // if(pieceColor != GameState.state){
+    //   throw new Error("No es el turno de la pieza seleccionada")
+    // }
 
     //chequear que la nueva posicion sea válida
     if (!this.ValidMoveCheck(actualIndex, newIndex)) {
@@ -376,12 +376,12 @@ export class BoardLogic {
     //preocuputar los ataques enemigos
     const enemyAttackedSquares: number[] = this.GetAttackedSquares(colorEnemigo)
 
+    //la pieza es blanca
     if (pieceColor == PieceColor.White && !GameState.whiteInCheck) {
-      //la pieza es blanca
+      //verifico el enroque corto
       if (GameState.castleWK) {
-        //verifico el enroque corto
         const isValid =
-          squares[64] == (PieceColor.White | PieceType.Rook) &&
+          squares[63] == (PieceColor.White | PieceType.Rook) &&
           squares[61] == 0 &&
           squares[62] == 0 &&
           !enemyAttackedSquares.includes(61) &&
@@ -433,7 +433,7 @@ export class BoardLogic {
   }
 
   private ValidMoveCheck(actualIndex: number, newIndex: number): boolean {
-    const moves: number[] = this.GetPossiblePieceMovements(actualIndex)
+    const moves: number[] = this.GetPossiblePieceMovements(actualIndex, null, true)
     for (const move of moves) {
       if (move == newIndex) {
         return true
@@ -464,7 +464,6 @@ export class BoardLogic {
             squares[56] = 0
             squares[59] = PieceColor.White | PieceType.Rook
           }
-
           GameState.castleWK = false
           GameState.castleWQ = false
         } else {

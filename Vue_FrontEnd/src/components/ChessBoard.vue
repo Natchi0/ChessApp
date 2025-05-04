@@ -11,7 +11,7 @@ const {squares} = storeToRefs(store)
 
 onMounted(() => {
   //inicializo el tablero
-  Board.LoadBoard();
+  Board.LoadBoard("rnbqkbnr/pppp1ppp/B7/4p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq -0 1");
   //cargo el tablero en el store
   console.log("Loaded squares: ", squares.value);
 })
@@ -34,7 +34,7 @@ function OnPieceClick(index:number): void{
     }
   }
   else{
-    if (selectedSquareIndex.value != index){
+    if (selectedSquareIndex.value != index && highlightedSquares.value.includes(index)) {
       try{
         Board.HandlePieceMovement(selectedSquareIndex.value, index);
       }
