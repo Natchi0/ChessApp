@@ -4,14 +4,15 @@ import { BoardLogic } from "@/logic/Board";
 import { useSquaresStore } from "@/stores/squares";
 import { storeToRefs } from "pinia";
 import { ref, onMounted, computed } from "vue";
+import { socketService } from "@/services/socketService";
 
 const store = useSquaresStore()
 const Board = BoardLogic.GetInstance();
 const {squares} = storeToRefs(store)
 
 onMounted(() => {
-  //inicializo el tablero
-  Board.LoadBoard("rnbqkbnr/pppp1ppp/B7/4p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq -0 1");
+  //inicializo el tablero "rnbqkbnr/pppp1ppp/B7/4p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq -0 1"
+  Board.LoadBoard();
   //cargo el tablero en el store
   console.log("Loaded squares: ", squares.value);
 })
@@ -36,7 +37,8 @@ function OnPieceClick(index:number): void{
   else{
     if (selectedSquareIndex.value != index && highlightedSquares.value.includes(index)) {
       try{
-        Board.HandlePieceMovement(selectedSquareIndex.value, index);
+        SendMove(selectedSquareIndex.value, index);
+        //Board.HandlePieceMovement(selectedSquareIndex.value, index);
       }
       catch (error){
         console.error("Error moving piece: ", error);
@@ -44,6 +46,21 @@ function OnPieceClick(index:number): void{
     }
     selectedSquareIndex.value = null;
   }
+}
+
+function SendMove(fromIndex:number, toIndex:number): void{
+  console.log("id = ", store.getGameId());
+  const mensage =
+  {
+    "Type": "move",
+    "GameId": store.getGameId(),
+    "PlayerId": 1,
+    "FromIndex": fromIndex,
+    "ToIndex": toIndex
+  };
+
+  console.log("Sending move: ", mensage);
+  socketService.sendMessage(JSON.stringify(mensage));
 }
 
 </script>

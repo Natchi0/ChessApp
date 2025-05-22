@@ -67,6 +67,20 @@ export class GameState {
     //instance.actualFern = getActualFern()
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public actualizarEstado(state: any){
+    this._state = state.State;
+    this._enPessant = state.EnPassant;
+    this._enPessantTargetColor = state.EnPassantTargetColor;
+    this._halfMoves = state.HalfMoves;
+    this._castleWK = state.CastleWK;
+    this._castleWQ = state.CastleWQ;
+    this._castleBK = state.CastleBK;
+    this._castleBQ = state.CastleBQ;
+    this._whiteInCheck = state.WhiteInCheck;
+    this._blackInCheck = state.BlackInCheck;
+  }
+
   //getters y setters
   public get state(): number {
     //retorno el estado convertido a color

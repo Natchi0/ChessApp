@@ -9,6 +9,7 @@ import { ref } from "vue";
  */
 export const useSquaresStore = defineStore("squares", () => {
   const squares = ref<number[]>([64]);
+  const gameId = ref<number | null>(null);
 
   //Inicializar el array de squares en 0
   for (let i = 0; i < 64; i++) {
@@ -49,5 +50,13 @@ export const useSquaresStore = defineStore("squares", () => {
     squares.value[index] = value;
   }
 
-  return { squares, setSquares, getSquares, getSquare, setSquare };
+  function setGameId(id: number) {
+    gameId.value = id;
+  }
+  function getGameId() {
+    return gameId.value;
+  }
+
+
+  return { squares, setSquares, getSquares, getSquare, setSquare, setGameId, getGameId };
 });

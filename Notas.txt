@@ -1,0 +1,4 @@
+-(a futuro)Matchmaking usando redis y buckets que filtren los jugadores segun nivel
+-Cuando se haga match poner el juego en una cola (rabbitMQ/kafka),
+ hasta que el servidor pueda procesarlo y crear la instancia del juego
+-poner todo en docker para crear mas instancias del servidor que consuman de la cola de ser nesesario
